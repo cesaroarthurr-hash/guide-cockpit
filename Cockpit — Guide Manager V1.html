@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cockpit — Guide Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#8DC63F;--gl:#F0F7E6;--gm:#d4edac;--bk:#1A1A1A;--bg:#F8F9FA;--bo:#E8E8E8;--gr:#6B6B6B;--gy:#F5F5F5;--rd:#EF4444;--rl:#FEF2F2;--bl:#3B82F6;--bll:#EFF6FF;--or:#F97316;--ol:#FFF7ED;--pu:#8B5CF6;--pl:#F5F3FF}
+html{font-size:14px}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--bk);line-height:1.6}
+h1{font-size:28px;font-weight:800;color:var(--bk)}
+h2{font-size:20px;font-weight:700;color:var(--bk);padding-left:14px;border-left:4px solid var(--g);margin-bottom:16px;margin-top:32px}
+h3{font-size:15px;font-weight:600;color:var(--bk);margin-bottom:8px;margin-top:18px}
+p{font-size:14px;color:var(--bk);line-height:1.65;margin-bottom:12px}
+strong{font-weight:600}
+.page{max-width:860px;margin:0 auto;padding:60px 56px;background:#fff}
+section.cs{max-width:860px;margin:0 auto;padding:56px 56px;background:#fff;border-top:1px solid var(--bo)}
+
+/* COVER */
+.cover{min-height:96vh;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(150deg,#f0f7e6 0%,#fff 55%,#f8f9fa 100%);position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:-100px;right:-100px;width:380px;height:380px;background:radial-gradient(circle,rgba(141,198,63,.13) 0%,transparent 70%);border-radius:50%}
+.cvc{position:relative;z-index:1}
+.cv-logo{width:120px;height:120px;border-radius:28px;overflow:hidden;box-shadow:0 20px 56px rgba(141,198,63,.32);cursor:pointer;background:var(--g);display:flex;align-items:center;justify-content:center;margin-bottom:36px}
+.cv-logo img{width:100%;height:100%;object-fit:cover;display:none}
+.cv-logo span{font-size:52px;font-weight:800;color:#fff;letter-spacing:-2px}
+.cv-ey{font-size:12px;font-weight:600;color:var(--g);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.cover h1{font-size:42px;font-weight:800;line-height:1.15;margin-bottom:14px}
+.cover h1 span{color:var(--g)}
+.cv-sub{font-size:17px;color:var(--gr);margin-bottom:44px;line-height:1.55}
+.cv-meta{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:40px}
+.cv-mi{display:flex;flex-direction:column;gap:3px}
+.cv-ml{font-size:11px;font-weight:600;color:var(--gr);text-transform:uppercase;letter-spacing:1px}
+.cv-mv{font-size:15px;font-weight:600;color:var(--bk)}
+.cv-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gl);border:1px solid var(--gm);padding:7px 14px;border-radius:100px;font-size:13px;font-weight:500;color:var(--g);margin-bottom:28px}
+.cv-badge::before{content:'●';font-size:7px}
+
+/* TOC */
+.toc{max-width:860px;margin:0 auto;padding:56px 56px;background:#fff;border-top:1px solid var(--bo)}
+.toc-tbl{width:100%;border-collapse:collapse;margin-top:24px}
+.toc-tbl tr{border-bottom:1px solid var(--bo);transition:background .12s}
+.toc-tbl tr:last-child{border-bottom:none}
+.toc-tbl tr:hover{background:var(--gl)}
+.toc-tbl td{padding:14px 12px;vertical-align:middle}
+.toc-nb{width:26px;height:26px;background:var(--g);color:#fff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.toc-tbl td a{color:var(--bk);text-decoration:none;font-size:14px;font-weight:500}
+.toc-tbl td a:hover{color:var(--g)}
+.toc-pi{width:52px;border:1px solid var(--bo);border-radius:7px;padding:4px 8px;font-size:13px;font-weight:600;text-align:center;color:var(--g);background:var(--gl);font-family:inherit}
+
+/* SEARCH */
+.search-section{max-width:860px;margin:0 auto;padding:32px 56px;background:#fff;border-top:1px solid var(--bo)}
+.search-wrap{position:relative}
+.search-input{width:100%;padding:14px 20px 14px 48px;border:2px solid var(--bo);border-radius:14px;font-size:15px;font-family:'Inter',sans-serif;color:var(--bk);background:#fff;transition:border-color .2s;outline:none}
+.search-input:focus{border-color:var(--g);box-shadow:0 0 0 4px rgba(141,198,63,.12)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none}
+.search-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:var(--gy);border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:13px;display:none;align-items:center;justify-content:center;color:var(--gr)}
+.search-clear.visible{display:flex}
+.search-results{margin-top:12px;display:none}
+.search-results.visible{display:block}
+.search-result-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg);border:1px solid var(--bo);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .15s;text-decoration:none}
+.search-result-item:hover{border-color:var(--g);background:var(--gl)}
+.sri-section{font-size:11px;font-weight:600;color:var(--g);text-transform:uppercase;letter-spacing:.8px;min-width:80px}
+.sri-text{font-size:14px;color:var(--bk);flex:1}
+.sri-text mark{background:rgba(141,198,63,.25);color:var(--bk);border-radius:3px;padding:0 2px}
+.sri-arrow{font-size:12px;color:var(--gr)}
+.search-empty{text-align:center;padding:24px;color:var(--gr);font-size:13px}
+.search-hint{font-size:12px;color:var(--gr);margin-top:8px;text-align:center}
+
+/* SECTION HEADER */
+.sh{display:flex;align-items:center;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--bo);margin-bottom:32px}
+.si{width:48px;height:48px;background:var(--g);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px rgba(141,198,63,.28);flex-shrink:0}
+.sn{font-size:11px;font-weight:600;color:var(--g);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px}
+.st{font-size:24px;font-weight:800;color:var(--bk);line-height:1.2}
+
+/* CALLOUTS */
+.co{border-radius:12px;padding:14px 18px;margin:14px 0;display:flex;gap:12px;align-items:flex-start}
+.co-i{font-size:17px;flex-shrink:0;margin-top:1px}
+.co-t{font-size:13px;font-weight:700;margin-bottom:3px}
+.co-b{font-size:13px;line-height:1.55}
+.co-g{background:var(--gl);border-left:4px solid var(--g)}.co-g .co-t{color:#3d6b1a}.co-g .co-b{color:#4a7d22}
+.co-bl{background:var(--bll);border-left:4px solid var(--bl)}.co-bl .co-t{color:#1d4ed8}.co-bl .co-b{color:#1e40af}
+.co-or{background:var(--ol);border-left:4px solid var(--or)}.co-or .co-t{color:#c2410c}.co-or .co-b{color:#ea580c}
+
+/* INLINE */
+.br{display:inline-flex;align-items:center;gap:3px;background:var(--g);color:#fff;border-radius:7px;padding:1px 9px;font-size:12px;font-weight:600;vertical-align:middle;line-height:1.8}
+.bdg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:100px;font-size:11px;font-weight:600;vertical-align:middle}
+.bdg-g{background:var(--gl);color:#3d6b1a}.bdg-r{background:var(--rl);color:var(--rd)}.bdg-o{background:var(--ol);color:var(--or)}.bdg-bl{background:var(--bll);color:var(--bl)}.bdg-gr{background:var(--gy);color:var(--gr)}
+
+/* TABLES */
+.tw{overflow-x:auto;margin:14px 0;border-radius:12px;border:1px solid var(--bo)}
+table.dt{width:100%;border-collapse:collapse;font-size:13px}
+table.dt thead tr{background:var(--g);color:#fff}
+table.dt thead th{padding:11px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+table.dt thead th:first-child{border-radius:11px 0 0 0}table.dt thead th:last-child{border-radius:0 11px 0 0}
+table.dt tbody tr:nth-child(odd){background:var(--bg)}table.dt tbody tr:nth-child(even){background:#fff}
+table.dt tbody td{padding:10px 14px;color:var(--bk);border-bottom:1px solid var(--bo);vertical-align:top;line-height:1.5}
+table.dt tbody tr:last-child td{border-bottom:none}
+
+/* LISTS */
+ul.bl{padding-left:0;margin:10px 0;list-style:none}
+ul.bl li{padding:4px 0 4px 20px;position:relative;font-size:14px;line-height:1.6}
+ul.bl li::before{content:'●';color:var(--g);font-size:7px;position:absolute;left:0;top:9px}
+
+/* CHECKLIST */
+.cl{list-style:none;padding:0;margin:10px 0}
+.cl li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--bo);font-size:14px}
+.cl li:last-child{border-bottom:none}
+.cb{width:18px;height:18px;border:2px solid var(--bo);border-radius:5px;flex-shrink:0;margin-top:3px;background:#fff}
+.clg{margin-bottom:24px}
+.clgt{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--bk);padding:10px 14px;background:var(--gl);border-radius:9px;margin-bottom:2px}
+
+/* REPLACEMENT CARDS */
+.rc{border-radius:12px;padding:14px 18px;margin:8px 0;border-left:5px solid}
+.rc-or{background:#FFF7ED;border-color:var(--or)}.rc-bl{background:var(--bll);border-color:var(--bl)}.rc-g{background:var(--gl);border-color:var(--g)}
+.rc-h{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rc-d{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.rc-or .rc-d{background:var(--or)}.rc-bl .rc-d{background:var(--bl)}.rc-g .rc-d{background:var(--g)}
+.rc-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+.rc-or .rc-t{color:var(--or)}.rc-bl .rc-t{color:var(--bl)}.rc-g .rc-t{color:#3d6b1a}
+.rc-b{font-size:13px;color:var(--gr)}
+
+/* NOTIF */
+.nl{display:flex;flex-direction:column;gap:7px;margin:14px 0}
+.ni{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--bo);border-radius:9px}
+.ni-ic{font-size:18px;flex-shrink:0;width:28px;text-align:center}
+.ni-t{font-size:13px;font-weight:500;flex:1}
+.ni-tr{font-size:12px;color:var(--gr);flex:1}
+
+/* FAQ */
+.fq{background:#fff;border:1px solid var(--bo);border-radius:12px;padding:18px 20px;margin-bottom:10px}
+.fq-q{font-size:14px;font-weight:600;color:var(--bk);margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.fq-qi{width:22px;height:22px;background:var(--bll);color:var(--bl);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.fq-a{font-size:13px;color:var(--gr);line-height:1.65;padding-left:32px}
+
+/* MISC */
+.card{background:#fff;border:1px solid var(--bo);border-radius:14px;padding:18px 22px;margin:14px 0}
+.cc{background:#fff;border:1px solid var(--bo);border-radius:14px;padding:18px;display:flex;gap:12px;align-items:flex-start}
+.ca{width:42px;height:42px;background:var(--g);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.cr-r{font-size:11px;color:var(--gr);margin-bottom:1px}
+.cn{font-size:14px;font-weight:700;color:var(--bk);margin-bottom:3px}
+.cd{font-size:13px;color:var(--g);font-weight:500}
+.cit{background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border:1px solid #DDD6FE;border-radius:14px;padding:18px 22px;margin:14px 0;display:flex;gap:12px;align-items:flex-start}
+.cit-t{font-size:14px;font-style:italic;color:#5B21B6;line-height:1.6}
+.nb{page-break-inside:avoid}
+.footer{background:var(--bk);color:rgba(255,255,255,.45);text-align:center;font-size:12px;padding:16px;margin-top:80px}
+
+/* SCREENSHOT LEGEND */
+.ss-leg{display:flex;align-items:center;gap:8px;background:var(--gl);border:1px solid var(--gm);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:#3d6b1a;margin-bottom:4px;margin-top:16px}
+.ss-leg::before{content:'📷';font-size:14px}
+
+/* SCREENSHOT */
+.ss{background:var(--gy);border:2px dashed var(--g);border-radius:12px;padding:28px 20px;text-align:center;color:var(--gr);font-size:13px;margin-bottom:16px;position:relative;cursor:pointer;transition:all .18s}
+.ss:hover{background:var(--gl);border-color:#7ab535}
+.ss:hover .ssh{opacity:1}
+.ss-ic{font-size:24px;margin-bottom:6px;display:block}
+.ss-n{font-weight:700;color:var(--bk);font-size:13px;margin-bottom:3px}
+.ss-l{color:var(--gr);margin-bottom:5px;font-size:12px;line-height:1.4}
+.ss-d{display:inline-block;background:var(--bo);padding:2px 8px;border-radius:100px;font-size:11px;color:var(--gr)}
+.ssh{position:absolute;bottom:8px;right:12px;opacity:0;transition:opacity .2s;font-size:11px;font-weight:600;color:var(--g)}
+.ss.hi{padding:0;border-style:solid;background:transparent;cursor:default}
+.ss.hi:hover{background:transparent}
+.ss.hi img{width:100%;border-radius:10px;display:block}
+.so{display:none;position:absolute;top:8px;right:8px;gap:6px}
+.ss.hi:hover .so{display:flex}
+.so button{padding:5px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:none}
+.so-r{background:rgba(0,0,0,.7);color:#fff}
+.so-d{background:rgba(239,68,68,.85);color:#fff}
+
+@media print{
+  .search-section{display:none}
+  body{background:#fff}
+  @page{size:A4;margin:20mm 15mm;
+    @bottom-left{content:"Cockpit — Guide Manager · Phase pilote";font-size:10px;color:#6B6B6B;font-family:Inter,sans-serif}
+    @bottom-right{content:"Page " counter(page) " / " counter(pages);font-size:10px;color:#6B6B6B;font-family:Inter,sans-serif}
+  }
+  .cover{min-height:auto;padding-bottom:60px;page-break-after:always}
+  .toc{page-break-after:always}
+  section.cs{page-break-before:always}
+}
+</style>
+</head>
+<body>
+<input type="file" id="fi" accept="image/*" style="display:none">
+
+<!-- COVER -->
+<div class="page cover" id="cover">
+  <div class="cvc">
+    <div class="cv-badge">Phase pilote</div>
+    <div class="cv-logo" id="cv-logo" onclick="triggerLogo()" title="Cliquer pour ajouter le logo">
+      <img id="logo-img" src="" alt="Logo">
+      <span id="logo-letter">C</span>
+    </div>
+    <div class="cv-ey">Guide d'utilisation</div>
+    <h1>Cockpit<br><span>Interface Manager</span></h1>
+    <p class="cv-sub">De la connexion au remplacement — tout ce qu'il faut savoir pour piloter votre équipe au quotidien.</p>
+    <div class="cv-meta">
+      <div class="cv-mi"><span class="cv-ml">Réservé à</span><span class="cv-mv">Ophélie Castelain</span></div>
+      <div class="cv-mi"><span class="cv-ml">Version</span><span class="cv-mv">Phase pilote</span></div>
+      <div class="cv-mi"><span class="cv-ml">Date</span><span class="cv-mv">31 mars 2026</span></div>
+    </div>
+    <div class="co co-bl" style="max-width:520px">
+      <span class="co-i">📖</span>
+      <div><div class="co-t">Comment lire ce guide</div><div class="co-b">Ce guide suit l'ordre naturel de navigation dans Cockpit : connexion → tableau de bord → comptes rendus → équipe → planning.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc" id="toc">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+    <div style="width:38px;height:38px;background:var(--gl);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px">📋</div>
+    <div><div style="font-size:11px;color:var(--gr);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:1px">Navigation</div><h1 style="font-size:22px">Sommaire</h1></div>
+  </div>
+  <p style="font-size:13px;color:var(--gr);margin-bottom:4px">Cliquez sur une section pour y accéder. Renseignez les numéros de page après impression.</p>
+  <table class="toc-tbl">
+    <tr><td style="width:36px"><div class="toc-nb">1</div></td><td><a href="#s1">Connexion &amp; prise en main</a></td><td style="width:80px;text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">2</div></td><td><a href="#s2">Le tableau de bord</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">3</div></td><td><a href="#s3">Les comptes rendus</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">4</div></td><td><a href="#s4">L'équipe — Les auxiliaires</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">5</div></td><td><a href="#s5">L'équipe — Les bénéficiaires</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">6</div></td><td><a href="#s6">Le planning &amp; les remplacements</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">7</div></td><td><a href="#s7">En cas de problème</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">✓</div></td><td><a href="#s8">Checklist de test</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">?</div></td><td><a href="#s9">Questions fréquentes (FAQ)</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+    <tr><td><div class="toc-nb">↗</div></td><td><a href="#s10">Carte de navigation rapide</a></td><td style="text-align:right"><input class="toc-pi" type="text" placeholder="p.—"></td></tr>
+  </table>
+</div>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div style="width:38px;height:38px;background:var(--bll);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px">🔍</div>
+    <div><div style="font-size:16px;font-weight:700;color:var(--bk)">Recherche rapide dans le guide</div><div style="font-size:13px;color:var(--gr)">Tapez un terme pour être redirigé vers la rubrique correspondante</div></div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="search-input" type="text" placeholder="Ex : remplacement, bien-être, badge, CR, planning…" oninput="doSearch(this.value)">
+    <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+  </div>
+  <div class="search-results" id="search-results"></div>
+  <div class="search-hint">Essayez : "remplacement", "badge", "bien-être", "notification", "plan d'action"…</div>
+</div>
+
+<!-- ═══ S1 CONNEXION ═══ -->
+<section class="cs" id="s1">
+  <div class="sh"><div class="si">🔐</div><div><div class="sn">Section 1</div><div class="st">Connexion &amp; prise en main</div></div></div>
+
+  <h2>1.1 Se connecter</h2>
+  <p>Ouvrez Cockpit depuis votre navigateur (ordinateur, tablette ou mobile). Renseignez votre e-mail et mot de passe puis cliquez sur <span class="br">Connexion</span>.</p>
+  <div class="ss-leg">Page de connexion — champs e-mail, mot de passe, bouton Connexion</div>
+  <div class="ss" data-id="ss1" onclick="up('ss1')"><span class="ss-ic">📸</span><div class="ss-n">SS1</div><div class="ss-l">Page de connexion</div><span class="ss-d">1280 × 720 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>1.2 L'interface générale</h2>
+  <p>Une <strong>barre de navigation fixe</strong> reste visible en permanence. <strong>À gauche :</strong> logo Cockpit (retour tableau de bord). <strong>À droite :</strong> cloche 🔔 et prénom cliquable.</p>
+  <div class="ss-leg">Interface générale annotée — logo, cloche, prénom, zone contenu principal</div>
+  <div class="ss" data-id="ss2" onclick="up('ss2')"><span class="ss-ic">📸</span><div class="ss-n">SS2</div><div class="ss-l">Interface générale annotée</div><span class="ss-d">1440 × 80 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>1.3 Le menu utilisateur</h2>
+  <p>Cliquez sur votre prénom : <strong>En-tête</strong> (nom + rôle Manager), <strong>🤝 Aide &amp; support</strong>, <strong>Se déconnecter</strong> (rouge).</p>
+  <div class="ss-leg">Menu utilisateur fermé — prénom visible, chevron</div>
+  <div class="ss" data-id="ss3" onclick="up('ss3')"><span class="ss-ic">📸</span><div class="ss-n">SS3</div><div class="ss-l">Menu utilisateur fermé</div><span class="ss-d">320 × 60 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Menu utilisateur ouvert avec panneau Aide &amp; support déplié — contacts Arthur CESARO et Jean DE GUERRE, numéros annotés</div>
+  <div class="ss" data-id="ss4" onclick="up('ss4')"><span class="ss-ic">📸</span><div class="ss-n">SS4</div><div class="ss-l">Menu utilisateur ouvert — Aide &amp; support déplié</div><span class="ss-d">320 × 400 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>1.4 Aide &amp; support</h2>
+  <div class="card nb" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="cc"><div class="ca">👤</div><div><div class="cr-r">Responsable du projet</div><div class="cn">Arthur CESARO</div><div class="cd">📞 06 21 09 47 20</div></div></div>
+    <div class="cc"><div class="ca">👤</div><div><div class="cr-r">Support &amp; accompagnement</div><div class="cn">Jean DE GUERRE</div><div class="cd">📞 06 15 43 96 88</div></div></div>
+  </div>
+  <div class="co co-bl"><span class="co-i">📱</span><div><div class="co-t">Depuis un mobile</div><div class="co-b">Cliquer sur un numéro ouvre directement la composition. Toujours accessibles en deux clics.</div></div></div>
+
+  <h2>1.5 La cloche de notifications 🔔</h2>
+  <p>Badge rouge = haute priorité. Badge gris = normale. En cas d'alerte urgente, un <strong>toast</strong> apparaît 8 secondes en haut à droite. Cliquez sur la cloche pour accéder à la page notifications, organisée en <strong>3 onglets</strong> : <strong>Toutes</strong>, <strong>Non lues</strong>, <strong>Historique</strong>. Bouton <span class="br">Tout marquer comme lu</span>. Chaque notification a un bouton <span class="br">Voir →</span> vers la page concernée.</p>
+  <div class="ss-leg">Cloche avec badge rouge + toast d'alerte en haut à droite — les deux éléments annotés</div>
+  <div class="ss" data-id="ss5" onclick="up('ss5')"><span class="ss-ic">📸</span><div class="ss-n">SS5</div><div class="ss-l">Cloche + toast annotés</div><span class="ss-d">1280 × 400 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h3>Les types de notifications</h3>
+  <div class="nl nb">
+    <div class="ni"><div class="ni-ic">✅</div><div class="ni-t">Remplacement accepté</div><div class="ni-tr">Une auxiliaire accepte votre demande</div><span class="bdg bdg-r">🔴 Haute</span></div>
+    <div class="ni"><div class="ni-ic">❌</div><div class="ni-t">Remplacement refusé</div><div class="ni-tr">Une auxiliaire refuse votre demande</div><span class="bdg bdg-r">🔴 Haute</span></div>
+    <div class="ni"><div class="ni-ic">⚠️</div><div class="ni-t">Point d'attention nouveau</div><div class="ni-tr">Signalement remonté par une auxiliaire</div><span class="bdg bdg-gr">Normale</span></div>
+    <div class="ni"><div class="ni-ic">📋</div><div class="ni-t">Nouveau CR soumis</div><div class="ni-tr">Un CR est en attente de validation</div><span class="bdg bdg-gr">Normale</span></div>
+    <div class="ni"><div class="ni-ic">😴</div><div class="ni-t">Score bien-être bas</div><div class="ni-tr">Une auxiliaire a un score ≤ 2/5</div><span class="bdg bdg-gr">Normale</span></div>
+    <div class="ni"><div class="ni-ic">🏆</div><div class="ni-t">Badge obtenu</div><div class="ni-tr">Une auxiliaire a décroché un badge</div><span class="bdg bdg-gr">Normale</span></div>
+    <div class="ni"><div class="ni-ic">📅</div><div class="ni-t">Mission annulée</div><div class="ni-tr">Une mission a été annulée automatiquement</div><span class="bdg bdg-gr">Normale</span></div>
+  </div>
+  <div class="ss-leg">Page notifications — 3 onglets (Toutes / Non lues / Historique), liste avec types et priorités</div>
+  <div class="ss" data-id="ss6" onclick="up('ss6')"><span class="ss-ic">📸</span><div class="ss-n">SS6</div><div class="ss-l">Page notifications complète</div><span class="ss-d">1280 × 700 px</span><div class="ssh">👆 Cliquer</div></div>
+</section>
+
+<!-- ═══ S2 TABLEAU DE BORD ═══ -->
+<section class="cs" id="s2">
+  <div class="sh"><div class="si">📊</div><div><div class="sn">Section 2</div><div class="st">Le tableau de bord</div></div></div>
+  <p>Le tableau de bord est votre <strong>point de départ quotidien</strong>.</p>
+  <div class="ss-leg">Tableau de bord complet — vue générale</div>
+  <div class="ss" data-id="ss7" onclick="up('ss7')"><span class="ss-ic">📸</span><div class="ss-n">SS7</div><div class="ss-l">Tableau de bord complet</div><span class="ss-d">1280 × 900 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>2.1 La citation du jour</h2>
+  <div class="cit"><span style="font-size:20px">✨</span><div class="cit-t">Un bon manager n'est pas celui qui sait tout, mais celui qui sait valoriser les compétences de chacun.</div></div>
+
+  <h2>2.2 Les 4 compteurs clés</h2>
+  <p>Quatre tuiles colorées résument l'activité du jour. <strong>Chacune est cliquable.</strong></p>
+  <div class="ss-leg">Les 4 tuiles annotées — libellé et destination au clic pour chaque tuile</div>
+  <div class="ss" data-id="ss8" onclick="up('ss8')"><span class="ss-ic">📸</span><div class="ss-n">SS8</div><div class="ss-l">Les 4 tuiles annotées</div><span class="ss-d">1280 × 200 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="tw nb"><table class="dt"><thead><tr><th>Tuile</th><th>Ce qu'elle indique</th><th>Action au clic</th></tr></thead><tbody>
+    <tr><td>⚠️ <strong>Points d'attention</strong></td><td>Signalements actifs non traités</td><td>Défile vers la liste des points d'attention sur la même page</td></tr>
+    <tr><td>📋 <strong>Comptes rendus en attente</strong></td><td>CR soumis, en attente de validation</td><td>Ouvre la page Comptes rendus (Section 3)</td></tr>
+    <tr><td>👩 <strong>Auxiliaires du jour</strong></td><td>Auxiliaires avec au moins 1 intervention aujourd'hui</td><td>Ouvre la page Équipe — Auxiliaires (Section 4)</td></tr>
+    <tr><td>🏠 <strong>Bénéficiaires du jour</strong></td><td>Bénéficiaires recevant une visite aujourd'hui</td><td>Ouvre le Planning filtré sur le jour (Section 6)</td></tr>
+  </tbody></table></div>
+
+  <h2>2.3 Les badges manager</h2>
+  <p>En haut à droite, le bloc <strong>Badges</strong> affiche votre progression (ex : 8/21). Cliquez pour accéder à la page détail.</p>
+  <div class="ss-leg">Bloc badges manager en haut à droite du tableau de bord — compteur X/21 annoté</div>
+  <div class="ss" data-id="ss9" onclick="up('ss9')"><span class="ss-ic">📸</span><div class="ss-n">SS9</div><div class="ss-l">Bloc badges manager</div><span class="ss-d">400 × 80 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Page détail des badges manager — liste des badges obtenus et à débloquer</div>
+  <div class="ss" data-id="ss10" onclick="up('ss10')"><span class="ss-ic">📸</span><div class="ss-n">SS10</div><div class="ss-l">Page détail badges manager</div><span class="ss-d">1280 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>2.4 Les points d'attention</h2>
+  <p>La tuile ⚠️ défile vers cette section. Chaque signalement indique le bénéficiaire, la nature, la date, l'auxiliaire et le statut : <span class="bdg bdg-r">Nouveau</span> ou <span class="bdg bdg-o">En cours</span>.</p>
+  <div class="ss-leg">Section points d'attention — statuts Nouveau et En cours visibles, couleurs annotées</div>
+  <div class="ss" data-id="ss11" onclick="up('ss11')"><span class="ss-ic">📸</span><div class="ss-n">SS11</div><div class="ss-l">Section points d'attention</div><span class="ss-d">1280 × 400 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Détail d'un point d'attention ouvert — description complète, bouton "Marquer comme traité" annoté</div>
+  <div class="ss" data-id="ss12" onclick="up('ss12')"><span class="ss-ic">📸</span><div class="ss-n">SS12</div><div class="ss-l">Détail point d'attention ouvert</div><span class="ss-d">860 × 400 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>2.5 Les statistiques — Taux de remontée &amp; Couverture bénéficiaires</h2>
+  <ul class="bl"><li><strong>Taux de remontée :</strong> % des interventions ayant donné lieu à un CR. Objectif : 100 %.</li><li><strong>Couverture bénéficiaires :</strong> % de bénéficiaires ayant reçu au moins un CR ce mois.</li></ul>
+  <p>Cliquez sur une jauge pour accéder au détail par auxiliaire.</p>
+  <div class="ss-leg">Les deux jauges annotées — chiffres, libellés et ratios (ex : 0% · 0 CR / 62 interventions)</div>
+  <div class="ss" data-id="ss13" onclick="up('ss13')"><span class="ss-ic">📸</span><div class="ss-n">SS13</div><div class="ss-l">Les deux jauges annotées</div><span class="ss-d">1280 × 320 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Détail taux de remontée — vue "Les moins actives d'abord" — auxiliaires à 0% avec badges rouges annotés</div>
+  <div class="ss" data-id="ss14" onclick="up('ss14')"><span class="ss-ic">📸</span><div class="ss-n">SS14</div><div class="ss-l">Vue "Les moins actives d'abord"</div><span class="ss-d">1280 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Détail taux de remontée — vue "Les plus actives d'abord" — auxiliaires avec taux > 0% en tête</div>
+  <div class="ss" data-id="ss15" onclick="up('ss15')"><span class="ss-ic">📸</span><div class="ss-n">SS15</div><div class="ss-l">Vue "Les plus actives d'abord"</div><span class="ss-d">1280 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>2.6 La barre de navigation</h2>
+  <ul class="bl"><li><strong>Tableau de bord</strong> — page d'accueil manager</li><li><strong>Équipe</strong> — auxiliaires et bénéficiaires</li><li><strong>Planning</strong> — planning et remplacements</li></ul>
+  <div class="ss-leg">Barre de navigation annotée — flèches sur les 3 rubriques Tableau de bord / Équipe / Planning</div>
+  <div class="ss" data-id="ss16" onclick="up('ss16')"><span class="ss-ic">📸</span><div class="ss-n">SS16</div><div class="ss-l">Barre de navigation annotée</div><span class="ss-d">1440 × 70 px</span><div class="ssh">👆 Cliquer</div></div>
+</section>
+
+<!-- ═══ S3 COMPTES RENDUS ═══ -->
+<section class="cs" id="s3">
+  <div class="sh"><div class="si">📋</div><div><div class="sn">Section 3</div><div class="st">Les comptes rendus</div></div></div>
+  <div class="co co-bl"><span class="co-i">↗️</span><div><div class="co-t">Comment y accéder</div><div class="co-b">Tuile <strong>📋 Comptes rendus en attente</strong> depuis le tableau de bord — ou depuis la fiche d'une auxiliaire.</div></div></div>
+
+  <h2>3.1 La liste des comptes rendus</h2>
+  <p>Tous les CR du plus récent au plus ancien : auxiliaire, bénéficiaire, date, statut <span class="bdg bdg-o">Soumis</span> ou <span class="bdg bdg-g">Validé</span>.</p>
+  <div class="ss-leg">Liste des comptes rendus — statuts Soumis et Validé visibles</div>
+  <div class="ss" data-id="ss17" onclick="up('ss17')"><span class="ss-ic">📸</span><div class="ss-n">SS17</div><div class="ss-l">Liste des comptes rendus</div><span class="ss-d">1280 × 700 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>3.2 Filtrer les comptes rendus</h2>
+  <div class="ss-leg">Vue filtrée "Soumis" uniquement — filtre actif annoté, liste réduite aux CR non validés</div>
+  <div class="ss" data-id="ss18" onclick="up('ss18')"><span class="ss-ic">📸</span><div class="ss-n">SS18</div><div class="ss-l">Vue filtrée Soumis uniquement</div><span class="ss-d">1280 × 500 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>3.3 Valider un compte rendu</h2>
+  <p>Cliquez sur une ligne : CR libre, points d'attention, heure et date. Cliquez sur <span class="br">Valider ce CR</span>. L'auxiliaire reçoit automatiquement une notification.</p>
+  <div class="ss-leg">Détail d'un CR ouvert — texte libre, points d'attention, bouton Valider annotés</div>
+  <div class="ss" data-id="ss19" onclick="up('ss19')"><span class="ss-ic">📸</span><div class="ss-n">SS19</div><div class="ss-l">Détail CR ouvert</div><span class="ss-d">860 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Confirmation après validation — statut passé à "Validé" (badge vert)</div>
+  <div class="ss" data-id="ss20" onclick="up('ss20')"><span class="ss-ic">📸</span><div class="ss-n">SS20</div><div class="ss-l">Confirmation après validation</div><span class="ss-d">860 × 200 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>3.4 Marquer tous les CR comme validés</h2>
+  <p>Le bouton <span class="br">✓ Tout marquer comme validé</span> traite d'un seul geste tous les CR soumis.</p>
+
+  <h2>3.5 Proposer un plan d'action</h2>
+  <p>Depuis le détail d'un CR, générez un <strong>plan d'action via l'IA</strong> basé sur les observations de l'auxiliaire, à lui transmettre pour sa prochaine intervention.</p>
+  <div class="ss-leg">Plan d'action depuis un CR — bouton génération IA, résultat affiché, bouton valider et envoyer</div>
+  <div class="ss" data-id="ss21" onclick="up('ss21')"><span class="ss-ic">📸</span><div class="ss-n">SS21</div><div class="ss-l">Plan d'action IA depuis un CR</div><span class="ss-d">860 × 500 px</span><div class="ssh">👆 Cliquer</div></div>
+</section>
+
+<!-- ═══ S4 EQUIPE AUXILIAIRES ═══ -->
+<section class="cs" id="s4">
+  <div class="sh"><div class="si">👩‍⚕️</div><div><div class="sn">Section 4</div><div class="st">L'équipe — Les auxiliaires</div></div></div>
+  <div class="co co-bl"><span class="co-i">↗️</span><div><div class="co-t">Comment y accéder</div><div class="co-b">Tuile <strong>👩 Auxiliaires du jour</strong> ou onglet <strong>Équipe</strong> dans la barre de navigation.</div></div></div>
+
+  <h2>4.1 La liste des auxiliaires</h2>
+  <p>L'onglet <strong>Auxiliaires</strong> : nom, score bien-être (<span class="bdg bdg-g">vert</span>/<span class="bdg bdg-o">orange</span>/<span class="bdg bdg-r">rouge</span>), interventions du jour. Champ de recherche pour filtrer.</p>
+  <div class="ss-leg">Liste des auxiliaires — scores bien-être colorés visibles, champ de recherche annoté</div>
+  <div class="ss" data-id="ss22" onclick="up('ss22')"><span class="ss-ic">📸</span><div class="ss-n">SS22</div><div class="ss-l">Liste des auxiliaires</div><span class="ss-d">1280 × 700 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Champ de recherche actif — résultat filtré avec 1-2 auxiliaires affichées</div>
+  <div class="ss" data-id="ss23" onclick="up('ss23')"><span class="ss-ic">📸</span><div class="ss-n">SS23</div><div class="ss-l">Champ recherche actif</div><span class="ss-d">1280 × 300 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>4.2 La fiche auxiliaire — 2 onglets</h2>
+  <p>Fiche organisée en <strong>2 onglets</strong> : <strong>Comptes rendus</strong> et <strong>Bien-être [Prénom]</strong>.</p>
+  <div class="ss-leg">Fiche auxiliaire — onglet Comptes rendus avec liste des CR, statuts et bouton valider annotés</div>
+  <div class="ss" data-id="ss24" onclick="up('ss24')"><span class="ss-ic">📸</span><div class="ss-n">SS24</div><div class="ss-l">Fiche auxiliaire — onglet Comptes rendus</div><span class="ss-d">1280 × 700 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h3>Bénéficiaires suivis par l'auxiliaire</h3>
+  <p>Dans l'onglet <strong>Comptes rendus</strong>, un champ de recherche liste tous les bénéficiaires suivis. Cliquez pour accéder à sa fiche.</p>
+  <div class="ss-leg">Barre de recherche bénéficiaires suivis — liste avec initiales, nom et adresse</div>
+  <div class="ss" data-id="ss25" onclick="up('ss25')"><span class="ss-ic">📸</span><div class="ss-n">SS25</div><div class="ss-l">Recherche bénéficiaires suivis</div><span class="ss-d">1280 × 600 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>4.3 La charge de travail &amp; Suggestions IA</h2>
+  <p>Dans l'onglet <strong>Comptes rendus</strong>, le bloc <strong>Charge de travail — semaine en cours</strong> indique : 🟢 Légère / 🟡 Normale / 🔴 Élevée, nombre d'interventions, de bénéficiaires et points d'attention.</p>
+  <div class="ss-leg">Bloc "Charge de travail — semaine en cours" — indicateur coloré, compteurs, lien Suggestions IA annoté</div>
+  <div class="ss" data-id="ss26" onclick="up('ss26')"><span class="ss-ic">📸</span><div class="ss-n">SS26</div><div class="ss-l">Bloc charge de travail</div><span class="ss-d">1280 × 120 px</span><div class="ssh">👆 Cliquer</div></div>
+  <p>Cliquez sur <strong>Suggestions IA →</strong> pour une analyse personnalisée : recommandations numérotées, tags d'action, note manager, bouton <span class="br">📄 Exporter en PDF</span>.</p>
+  <div class="ss-leg">Modal Suggestions IA charge de travail — recommandations numérotées, tags, note manager, bouton Exporter en PDF</div>
+  <div class="ss" data-id="ss27" onclick="up('ss27')"><span class="ss-ic">📸</span><div class="ss-n">SS27</div><div class="ss-l">Modal Suggestions IA charge de travail</div><span class="ss-d">1280 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Aperçu du PDF exporté "Suggestions IA charge de travail" — document structuré</div>
+  <div class="ss" data-id="ss28" onclick="up('ss28')"><span class="ss-ic">📸</span><div class="ss-n">SS28</div><div class="ss-l">PDF Suggestions IA exporté</div><span class="ss-d">860 × 600 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>4.4 Les badges d'une auxiliaire</h2>
+  <p>En haut à droite de la fiche auxiliaire, le bouton <strong>Badges [Prénom]</strong> affiche le compteur de badges obtenus. Cliquez pour la page complète : compteur X/13, barre de progression, grille des 13 badges.</p>
+  <div class="ss-leg">Bouton Badges [Prénom] en haut à droite de la fiche auxiliaire — médaille et compteur annotés</div>
+  <div class="ss" data-id="ss29" onclick="up('ss29')"><span class="ss-ic">📸</span><div class="ss-n">SS29</div><div class="ss-l">Bouton Badges sur la fiche auxiliaire</div><span class="ss-d">400 × 80 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Page badges auxiliaire complète — compteur X/13, barre de progression, grille des 13 badges (obtenus en couleur, non obtenus en grisé)</div>
+  <div class="ss" data-id="ss30" onclick="up('ss30')"><span class="ss-ic">📸</span><div class="ss-n">SS30</div><div class="ss-l">Page badges auxiliaire complète</div><span class="ss-d">1280 × 900 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="co co-bl"><span class="co-i">💡</span><div><div class="co-t">À quoi servent les badges ?</div><div class="co-b">Les badges récompensent automatiquement les bonnes pratiques : régularité des CR, vigilance sur les points d'attention, réactivité… Levier de motivation à valoriser lors de vos échanges.</div></div></div>
+
+  <h2>4.5 Le bien-être d'une auxiliaire</h2>
+  <p>Cliquez sur l'onglet <strong>Bien-être [Prénom]</strong>. En haut, le bouton <strong>☕ Proposer un café</strong> compose automatiquement son numéro depuis votre mobile — idéal lorsque vous détectez un signal d'épuisement.</p>
+  <div class="ss-leg">Bouton "☕ Proposer un café avec [Prénom]" — encart cliquable en haut de l'onglet Bien-être</div>
+  <div class="ss" data-id="ss31" onclick="up('ss31')"><span class="ss-ic">📸</span><div class="ss-n">SS31</div><div class="ss-l">Bouton ☕ Proposer un café</div><span class="ss-d">860 × 100 px</span><div class="ssh">👆 Cliquer</div></div>
+  <p>La page contient également : sélecteur Semaine / Mois / 3 mois, score moyen avec tendance, graphique d'évolution, 4 indicateurs moyens, calendrier mensuel et points d'attention récents.</p>
+  <div class="ss-leg">Onglet Bien-être — voyant de tendance + sélecteur de période (Semaine / Mois / 3 mois)</div>
+  <div class="ss" data-id="ss32" onclick="up('ss32')"><span class="ss-ic">📸</span><div class="ss-n">SS32</div><div class="ss-l">Onglet Bien-être — voyant + sélecteur</div><span class="ss-d">1280 × 400 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Graphique "Évolution des indicateurs" — 3 courbes Humeur / Énergie / Alimentation sur la période</div>
+  <div class="ss" data-id="ss33" onclick="up('ss33')"><span class="ss-ic">📸</span><div class="ss-n">SS33</div><div class="ss-l">Graphique évolution indicateurs</div><span class="ss-d">860 × 280 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">4 blocs indicateurs moyens + calendrier mensuel + points d'attention récents</div>
+  <div class="ss" data-id="ss34" onclick="up('ss34')"><span class="ss-ic">📸</span><div class="ss-n">SS34</div><div class="ss-l">4 indicateurs + calendrier + points d'attention</div><span class="ss-d">860 × 700 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>4.6 Recommandations IA bien-être</h2>
+  <p>Le bouton <span class="br">✨ Générer les recommandations</span> produit une analyse personnalisée : jours difficiles, tendance, recommandations concrètes.</p>
+  <div class="ss-leg">Recommandations IA bien-être dépliées — analyse complète, points de vigilance et pistes d'action</div>
+  <div class="ss" data-id="ss35" onclick="up('ss35')"><span class="ss-ic">📸</span><div class="ss-n">SS35</div><div class="ss-l">Recommandations IA bien-être</div><span class="ss-d">860 × 500 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="co co-or"><span class="co-i">❓</span><div><div class="co-t">Comment les scores bien-être sont-ils alimentés ?</div><div class="co-b">Chaque soir après la dernière intervention, un questionnaire de 3 questions s'affiche sur le téléphone de l'auxiliaire. Elle répond de 😴 à 🤩. La moyenne constitue le score du jour. Une fois par jour, uniquement les jours avec interventions.</div></div></div>
+  <div class="ss-leg">Modal questionnaire bien-être côté auxiliaire — 3 questions successives, barre de progression, boutons 😴 à 🤩</div>
+  <div class="ss" data-id="ss36" onclick="up('ss36')"><span class="ss-ic">📸</span><div class="ss-n">SS36</div><div class="ss-l">Questionnaire bien-être côté auxiliaire</div><span class="ss-d">480 × 700 px</span><div class="ssh">👆 Cliquer</div></div>
+</section>
+
+<!-- ═══ S5 EQUIPE BENEFICIAIRES ═══ -->
+<section class="cs" id="s5">
+  <div class="sh"><div class="si">🧓</div><div><div class="sn">Section 5</div><div class="st">L'équipe — Les bénéficiaires</div></div></div>
+  <div class="co co-bl"><span class="co-i">↗️</span><div><div class="co-t">Comment y accéder</div><div class="co-b">Onglet <strong>Bénéficiaires</strong> depuis la page Équipe, ou via un lien dans un CR, une notification ou la fiche d'une auxiliaire.</div></div></div>
+
+  <h2>5.1 La liste globale des bénéficiaires</h2>
+  <p>L'onglet <strong>Bénéficiaires (110)</strong> : initiales, nom, statut <span class="bdg bdg-g">Actif</span>, téléphone cliquable, score /5. Champ de recherche + lien <strong>ⓘ Comprendre les indicateurs</strong>. Cliquez sur un bénéficiaire pour sa fiche.</p>
+  <div class="ss-leg">Page Équipe — onglet Bénéficiaires — liste avec initiales, noms, statuts Actif, numéros, scores bien-être annotés</div>
+  <div class="ss" data-id="ss37" onclick="up('ss37')"><span class="ss-ic">📸</span><div class="ss-n">SS37</div><div class="ss-l">Onglet Bénéficiaires — liste globale</div><span class="ss-d">1280 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>5.2 La fiche bénéficiaire — 3 onglets</h2>
+  <p>Organisée en <strong>3 onglets</strong> : <strong>Comptes rendus</strong>, <strong>Informations</strong> et <strong>Bien-être [Prénom]</strong>.</p>
+
+  <h3>Onglet Comptes rendus</h3>
+  <div class="ss-leg">Fiche bénéficiaire — onglet Comptes rendus — liste avec dates, auxiliaires et statuts</div>
+  <div class="ss" data-id="ss38" onclick="up('ss38')"><span class="ss-ic">📸</span><div class="ss-n">SS38</div><div class="ss-l">Fiche bénéficiaire — Comptes rendus</div><span class="ss-d">1280 × 600 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h3>Onglet Informations</h3>
+  <ul class="bl"><li><strong>Adresse</strong> avec bouton <span class="br">S'y rendre 🗺️</span></li><li><strong>Informations générales :</strong> statut, téléphone cliquable</li><li><strong>Notes :</strong> zone de notes libres</li><li><strong>Contacts :</strong> personnes à prévenir en urgence (nom, relation, numéro cliquable)</li></ul>
+  <div class="ss-leg">Fiche bénéficiaire — onglet Informations — adresse, bouton S'y rendre, infos générales, notes, contacts d'urgence</div>
+  <div class="ss" data-id="ss39" onclick="up('ss39')"><span class="ss-ic">📸</span><div class="ss-n">SS39</div><div class="ss-l">Fiche bénéficiaire — Informations</div><span class="ss-d">1280 × 900 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h3>Onglet Bien-être [Prénom]</h3>
+  <p>Voyant de tendance sur 7 jours : <span class="bdg bdg-g">📈 En amélioration</span> <span class="bdg bdg-gr">➡️ Stable</span> <span class="bdg bdg-r">📉 En baisse</span>. Sélecteur Semaine / Mois / 3 mois, graphique d'évolution, 4 indicateurs moyens, calendrier mensuel, points d'attention récents.</p>
+  <div class="ss-leg">Onglet Bien-être bénéficiaire — voyant de tendance + sélecteur de période (Semaine / Mois / 3 mois)</div>
+  <div class="ss" data-id="ss40" onclick="up('ss40')"><span class="ss-ic">📸</span><div class="ss-n">SS40</div><div class="ss-l">Bien-être bénéficiaire — voyant + sélecteur</div><span class="ss-d">1280 × 300 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Graphique "Évolution des indicateurs" bénéficiaire — courbes Humeur / Énergie / Alimentation</div>
+  <div class="ss" data-id="ss41" onclick="up('ss41')"><span class="ss-ic">📸</span><div class="ss-n">SS41</div><div class="ss-l">Graphique évolution indicateurs bénéficiaire</div><span class="ss-d">860 × 280 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">4 blocs indicateurs moyens bénéficiaire — Humeur /5, Énergie /5, Alimentation /5, Points d'attention</div>
+  <div class="ss" data-id="ss42" onclick="up('ss42')"><span class="ss-ic">📸</span><div class="ss-n">SS42</div><div class="ss-l">4 indicateurs moyens bénéficiaire</div><span class="ss-d">860 × 200 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Calendrier mensuel bénéficiaire — cases vertes = jours d'intervention, navigation entre les mois</div>
+  <div class="ss" data-id="ss43" onclick="up('ss43')"><span class="ss-ic">📸</span><div class="ss-n">SS43</div><div class="ss-l">Calendrier mensuel bénéficiaire</div><span class="ss-d">860 × 500 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Points d'attention récents bénéficiaire — date, texte du signalement, auxiliaire, badge statut (Nouveau / En cours / Traité)</div>
+  <div class="ss" data-id="ss44" onclick="up('ss44')"><span class="ss-ic">📸</span><div class="ss-n">SS44</div><div class="ss-l">Points d'attention récents bénéficiaire</div><span class="ss-d">860 × 300 px</span><div class="ssh">👆 Cliquer</div></div>
+</section>
+
+<!-- ═══ S6 PLANNING ═══ -->
+<section class="cs" id="s6">
+  <div class="sh"><div class="si">📅</div><div><div class="sn">Section 6</div><div class="st">Le planning &amp; les remplacements</div></div></div>
+  <div class="co co-bl"><span class="co-i">↗️</span><div><div class="co-t">Comment y accéder</div><div class="co-b">Tuile <strong>🏠 Bénéficiaires du jour</strong> (planning filtré sur le jour) ou onglet <strong>Planning</strong> dans la barre de navigation.</div></div></div>
+
+  <h2>6.1 Le planning du jour</h2>
+  <p>Interventions chronologiques : auxiliaire, bénéficiaire, horaires, statut <span class="bdg bdg-g">Confirmée</span> <span class="bdg bdg-r">Annulée</span> <span class="bdg bdg-o">Remplacement en cours</span> <span class="bdg bdg-bl">Remplacement demandé</span>.</p>
+  <div class="ss-leg">Planning du jour — missions chronologiques avec statuts colorés différents annotés</div>
+  <div class="ss" data-id="ss45" onclick="up('ss45')"><span class="ss-ic">📸</span><div class="ss-n">SS45</div><div class="ss-l">Planning du jour</div><span class="ss-d">1280 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>6.2 La fiche détail d'une mission</h2>
+  <p>Cliquez sur une mission : bénéficiaire, auxiliaire, adresse, horaires, statut, boutons <span class="br">Voir la fiche bénéficiaire</span> <span class="br">Trouver un remplacement</span> <span class="br">Annuler la mission</span>.</p>
+  <div class="ss-leg">Fiche détail d'une mission — toutes les informations et boutons d'action annotés</div>
+  <div class="ss" data-id="ss46" onclick="up('ss46')"><span class="ss-ic">📸</span><div class="ss-n">SS46</div><div class="ss-l">Fiche détail d'une mission</div><span class="ss-d">860 × 500 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>6.3 Déclencher un remplacement</h2>
+  <p>Cockpit analyse l'équipe : chevauchements horaires, repos réglementaire, durée max, score bien-être.</p>
+  <div class="ss-leg">Écran de chargement — "Analyse des disponibilités en cours…" avec skeletons de cartes</div>
+  <div class="ss" data-id="ss47" onclick="up('ss47')"><span class="ss-ic">📸</span><div class="ss-n">SS47</div><div class="ss-l">Écran chargement analyse remplacement</div><span class="ss-d">1280 × 500 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>6.4 Les suggestions de remplacement</h2>
+  <p>Jusqu'à <strong>3 suggestions</strong> classées : rang, score d'adéquation, justification IA, points forts (vert) et points d'attention (orange).</p>
+  <div class="ss-leg">Page suggestions de remplacement — 3 fiches auxiliaires avec rangs et scores annotés</div>
+  <div class="ss" data-id="ss48" onclick="up('ss48')"><span class="ss-ic">📸</span><div class="ss-n">SS48</div><div class="ss-l">Page suggestions de remplacement</div><span class="ss-d">1280 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Fiche suggestion close-up — barre de score, justification IA, pastilles points forts et points d'attention</div>
+  <div class="ss" data-id="ss49" onclick="up('ss49')"><span class="ss-ic">📸</span><div class="ss-n">SS49</div><div class="ss-l">Fiche suggestion close-up</div><span class="ss-d">860 × 400 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>6.5 Les 3 boutons d'action</h2>
+  <div class="ss-leg">Les 3 boutons d'action annotés — 📤 Envoyer la demande / 📞 Appeler / ✅ Valider directement</div>
+  <div class="ss" data-id="ss50" onclick="up('ss50')"><span class="ss-ic">📸</span><div class="ss-n">SS50</div><div class="ss-l">Les 3 boutons d'action annotés</div><span class="ss-d">860 × 200 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="tw nb"><table class="dt"><thead><tr><th>Bouton</th><th>Ce qu'il fait</th></tr></thead><tbody>
+    <tr><td>📤 <strong>Envoyer la demande à [Prénom]</strong></td><td>L'auxiliaire répond ✅ Accepter ou ❌ Refuser. Vous êtes notifié dès sa réponse.</td></tr>
+    <tr><td>📞 <strong>Appeler [Prénom]</strong></td><td>Compose automatiquement le numéro depuis votre mobile.</td></tr>
+    <tr><td>✅ <strong>Valider directement</strong></td><td>Confirme immédiatement si accord verbal. L'auxiliaire reçoit une notification d'assignation.</td></tr>
+  </tbody></table></div>
+  <div class="ss-leg">Modal "Envoyer la demande" — pop-up avec nom de l'auxiliaire et bouton confirmer</div>
+  <div class="ss" data-id="ss51" onclick="up('ss51')"><span class="ss-ic">📸</span><div class="ss-n">SS51</div><div class="ss-l">Modal Envoyer la demande</div><span class="ss-d">480 × 280 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Modal "Valider directement ce remplacement" — pop-up distinct avec bouton vert ✅</div>
+  <div class="ss" data-id="ss52" onclick="up('ss52')"><span class="ss-ic">📸</span><div class="ss-n">SS52</div><div class="ss-l">Modal Valider directement</div><span class="ss-d">480 × 280 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>6.6 L'onglet Remplacements — Suivi en temps réel</h2>
+  <div class="rc rc-or nb"><div class="rc-h"><div class="rc-d"></div><div class="rc-t">⏳ En attente d'acceptation</div></div><div class="rc-b">Demande envoyée, en attente de réponse. Cliquez pour retourner aux suggestions.</div></div>
+  <div class="rc rc-bl nb"><div class="rc-h"><div class="rc-d"></div><div class="rc-t">🔄 Remplacement à trouver</div></div><div class="rc-b">Mission sans demande encore envoyée. Cliquez pour accéder aux suggestions.</div></div>
+  <div class="rc rc-g nb"><div class="rc-h"><div class="rc-d"></div><div class="rc-t">✅ Confirmés récemment</div></div><div class="rc-b">Remplacements acceptés : bénéficiaire, date, horaires, ancienne → nouvelle auxiliaire.</div></div>
+  <div class="ss-leg">Onglet Remplacements — 3 sections annotées (⏳ En attente / 🔄 À trouver / ✅ Confirmés)</div>
+  <div class="ss" data-id="ss53" onclick="up('ss53')"><span class="ss-ic">📸</span><div class="ss-n">SS53</div><div class="ss-l">Onglet Remplacements — 3 sections</div><span class="ss-d">1280 × 800 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>6.7 Exporter un remplacement en PDF</h2>
+  <p>Le bouton <span class="br">📋 Exporter en PDF</span> génère un document : intervention, auxiliaire retirée (rouge), auxiliaire assignée (vert), tableau récapitulatif.</p>
+  <div class="ss-leg">Carte remplacement confirmé — badge REMPLACÉ visible, bouton 📋 Exporter en PDF annoté</div>
+  <div class="ss" data-id="ss54" onclick="up('ss54')"><span class="ss-ic">📸</span><div class="ss-n">SS54</div><div class="ss-l">Carte remplacement confirmé + bouton export</div><span class="ss-d">860 × 200 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Aperçu du PDF exporté remplacement — encadrés rouge (auxiliaire retirée) et vert (auxiliaire assignée) visibles</div>
+  <div class="ss" data-id="ss55" onclick="up('ss55')"><span class="ss-ic">📸</span><div class="ss-n">SS55</div><div class="ss-l">PDF remplacement exporté</div><span class="ss-d">860 × 600 px</span><div class="ssh">👆 Cliquer</div></div>
+
+  <h2>6.8 L'historique des remplacements &amp; annulations</h2>
+  <div class="ss-leg">Historique des remplacements archivés — liste avec statut REMPLACÉ</div>
+  <div class="ss" data-id="ss56" onclick="up('ss56')"><span class="ss-ic">📸</span><div class="ss-n">SS56</div><div class="ss-l">Historique des remplacements</div><span class="ss-d">1280 × 500 px</span><div class="ssh">👆 Cliquer</div></div>
+  <div class="ss-leg">Historique des annulations — liste avec statut ANNULÉ et motif visible</div>
+  <div class="ss" data-id="ss57" onclick="up('ss57')"><span class="ss-ic">📸</span><div class="ss-n">SS57</div><div class="ss-l">Historique des annulations</div><span class="ss-d">1280 × 500 px</span><div class="ssh">👆 Cliquer</div></div>
+</section>
+
+<!-- ═══ S7 PROBLEME ═══ -->
+<section class="cs" id="s7">
+  <div class="sh"><div class="si">🆘</div><div><div class="sn">Section 7</div><div class="st">En cas de problème</div></div></div>
+  <div class="co co-bl"><span class="co-i">📱</span><div><div class="co-t">Accès rapide</div><div class="co-b">Prénom en haut à droite → 🤝 <strong>Aide &amp; support</strong>. Depuis un mobile, cliquer sur un numéro ouvre la composition automatiquement.</div></div></div>
+  <div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="cc"><div class="ca">👤</div><div><div class="cr-r">Responsable du projet</div><div class="cn">Arthur CESARO</div><div class="cd">📞 06 21 09 47 20</div></div></div>
+    <div class="cc"><div class="ca">👤</div><div><div class="cr-r">Support &amp; accompagnement</div><div class="cn">Jean DE GUERRE</div><div class="cd">📞 06 15 43 96 88</div></div></div>
+  </div>
+  <div class="co co-or" style="margin-top:24px"><span class="co-i">🌱</span><div><div class="co-t">Phase pilote</div><div class="co-b">Ce guide accompagne la phase pilote de <strong>Cockpit</strong>. Certaines fonctionnalités peuvent évoluer en fonction de vos retours.</div></div></div>
+</section>
+
+<!-- ═══ CHECKLIST ═══ -->
+<section class="cs" id="s8">
+  <div class="sh"><div class="si">✅</div><div><div class="sn">Checklist</div><div class="st">Checklist de test</div></div></div>
+  <div class="co co-bl"><span class="co-i">🎯</span><div><div class="co-t">Objectif</div><div class="co-b">Cochez chaque item au fur et à mesure de vos essais pendant la phase pilote.</div></div></div>
+  <div class="clg nb"><div class="clgt">🔐 Connexion &amp; interface</div><ul class="cl">
+    <li><div class="cb"></div><span>Se connecter avec ses identifiants</span></li>
+    <li><div class="cb"></div><span>Naviguer via le logo pour revenir au tableau de bord</span></li>
+    <li><div class="cb"></div><span>Ouvrir le menu utilisateur et accéder à Aide &amp; support</span></li>
+    <li><div class="cb"></div><span>Recevoir une notification et consulter les 3 onglets (Toutes / Non lues / Historique)</span></li>
+  </ul></div>
+  <div class="clg nb"><div class="clgt">📊 Tableau de bord</div><ul class="cl">
+    <li><div class="cb"></div><span>Vérifier les 4 tuiles et tester chaque redirection</span></li>
+    <li><div class="cb"></div><span>Consulter les badges manager et ouvrir la page détail</span></li>
+    <li><div class="cb"></div><span>Ouvrir un point d'attention et le marquer comme traité</span></li>
+    <li><div class="cb"></div><span>Cliquer sur la jauge "Taux de remontée" et basculer entre les deux vues</span></li>
+  </ul></div>
+  <div class="clg nb"><div class="clgt">📋 Comptes rendus</div><ul class="cl">
+    <li><div class="cb"></div><span>Ouvrir un compte rendu et lire la transcription</span></li>
+    <li><div class="cb"></div><span>Valider un CR individuellement</span></li>
+    <li><div class="cb"></div><span>Utiliser "Tout marquer comme validé"</span></li>
+    <li><div class="cb"></div><span>Générer un plan d'action depuis un CR</span></li>
+  </ul></div>
+  <div class="clg nb"><div class="clgt">👩‍⚕️ Équipe — Auxiliaires</div><ul class="cl">
+    <li><div class="cb"></div><span>Utiliser la recherche pour trouver une auxiliaire</span></li>
+    <li><div class="cb"></div><span>Ouvrir la fiche auxiliaire et consulter les 2 onglets</span></li>
+    <li><div class="cb"></div><span>Consulter la liste des bénéficiaires suivis</span></li>
+    <li><div class="cb"></div><span>Consulter le bloc "Charge de travail" et cliquer sur Suggestions IA</span></li>
+    <li><div class="cb"></div><span>Exporter les suggestions IA en PDF</span></li>
+    <li><div class="cb"></div><span>Consulter les badges d'une auxiliaire</span></li>
+    <li><div class="cb"></div><span>Consulter le bien-être et tester le bouton ☕ Proposer un café</span></li>
+    <li><div class="cb"></div><span>Générer les recommandations IA bien-être</span></li>
+  </ul></div>
+  <div class="clg nb"><div class="clgt">🧓 Équipe — Bénéficiaires</div><ul class="cl">
+    <li><div class="cb"></div><span>Accéder à l'onglet Bénéficiaires depuis la page Équipe</span></li>
+    <li><div class="cb"></div><span>Ouvrir la fiche d'un bénéficiaire et consulter les 3 onglets</span></li>
+    <li><div class="cb"></div><span>Tester le bouton S'y rendre sur l'adresse</span></li>
+  </ul></div>
+  <div class="clg nb"><div class="clgt">📅 Planning &amp; remplacements</div><ul class="cl">
+    <li><div class="cb"></div><span>Naviguer dans le planning jour par jour</span></li>
+    <li><div class="cb"></div><span>Cliquer sur une mission et lire sa fiche</span></li>
+    <li><div class="cb"></div><span>Déclencher une recherche de remplacement</span></li>
+    <li><div class="cb"></div><span>Envoyer une demande et vérifier l'onglet "En attente"</span></li>
+    <li><div class="cb"></div><span>Tester le bouton 📞 Appeler depuis les suggestions</span></li>
+    <li><div class="cb"></div><span>Exporter un remplacement confirmé en PDF</span></li>
+  </ul></div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="cs" id="s9">
+  <div class="sh"><div class="si">❓</div><div><div class="sn">Questions fréquentes</div><div class="st">FAQ — Aide rapide</div></div></div>
+  <div class="fq nb"><div class="fq-q"><span class="fq-qi">?</span>Je ne vois pas de notifications alors qu'une auxiliaire a soumis un CR.</div><div class="fq-a">Vérifiez l'onglet <strong>Non lues</strong>. Si rien n'apparaît, actualisez — la cloche se met à jour toutes les 30 secondes.</div></div>
+  <div class="fq nb"><div class="fq-q"><span class="fq-qi">?</span>Le remplacement envoyé n'apparaît pas dans l'onglet "En attente".</div><div class="fq-a">Actualisez la page planning — l'onglet Remplacements se rafraîchit automatiquement toutes les 30 secondes.</div></div>
+  <div class="fq nb"><div class="fq-q"><span class="fq-qi">?</span>Le bouton ☕ "Proposer un café" ne compose pas automatiquement.</div><div class="fq-a">Ce bouton fonctionne uniquement depuis un <strong>appareil mobile</strong>. Depuis un ordinateur, il affiche le numéro à composer manuellement.</div></div>
+  <div class="fq nb"><div class="fq-q"><span class="fq-qi">?</span>Le score de bien-être d'une auxiliaire n'a pas évolué depuis plusieurs jours.</div><div class="fq-a">Le questionnaire s'affiche uniquement après la dernière intervention de la journée. Si l'auxiliaire n'a pas répondu, le score n'est pas mis à jour.</div></div>
+  <div class="fq nb"><div class="fq-q"><span class="fq-qi">?</span>Je ne trouve pas un bénéficiaire.</div><div class="fq-a">Allez dans <strong>Équipe → onglet Bénéficiaires</strong> et utilisez la barre de recherche. Accessible aussi depuis la fiche d'une auxiliaire, un CR ou une notification.</div></div>
+  <div class="fq nb"><div class="fq-q"><span class="fq-qi">?</span>Le taux de remontée est à 0%.</div><div class="fq-a">Cliquez sur la jauge → vue <strong>"Les moins actives d'abord"</strong> pour identifier précisément les auxiliaires sans CR.</div></div>
+  <div class="fq nb"><div class="fq-q"><span class="fq-qi">?</span>Je souhaite signaler un bug ou faire un retour.</div><div class="fq-a">Notez ce que vous faisiez, ce que vous avez vu, sur quel appareil, puis contactez via <strong>Aide &amp; support</strong> (prénom en haut à droite).</div></div>
+  <div class="fq nb"><div class="fq-q"><span class="fq-qi">?</span>Cockpit est-il accessible depuis un téléphone ?</div><div class="fq-a">Oui, depuis n'importe quel navigateur mobile. Le bouton ☕ Proposer un café et les boutons 📞 Appeler sont optimisés pour le mobile.</div></div>
+</section>
+
+<!-- ═══ INDEX ═══ -->
+<section class="cs" id="s10">
+  <div class="sh"><div class="si">🗺️</div><div><div class="sn">Index rapide</div><div class="st">Carte de navigation rapide</div><div style="font-size:12px;color:var(--gr);margin-top:2px">57 screenshots · 7 sections</div></div></div>
+  <div class="tw"><table class="dt"><thead><tr><th>Je veux…</th><th>Je vais sur…</th><th>SS</th></tr></thead><tbody>
+    <tr><td>Me connecter</td><td>Page de connexion</td><td>SS1</td></tr>
+    <tr><td>Accéder au support</td><td>Prénom → 🤝 Aide &amp; support</td><td>SS4</td></tr>
+    <tr><td>Voir les notifications</td><td>Cloche 🔔 → Page notifications</td><td>SS5–6</td></tr>
+    <tr><td>Vue du tableau de bord</td><td>Tableau de bord complet</td><td>SS7</td></tr>
+    <tr><td>Voir les 4 tuiles</td><td>Tableau de bord → compteurs</td><td>SS8</td></tr>
+    <tr><td>Voir mes badges manager</td><td>Tableau de bord → Badges</td><td>SS9–10</td></tr>
+    <tr><td>Traiter un point d'attention</td><td>Tableau de bord → Points d'attention</td><td>SS11–12</td></tr>
+    <tr><td>Voir les statistiques</td><td>Tableau de bord → Jauges</td><td>SS13</td></tr>
+    <tr><td>Piloter le taux de remontée</td><td>Jauge → Détail par auxiliaire</td><td>SS14–15</td></tr>
+    <tr><td>Valider un compte rendu</td><td>CR → Détail → Valider</td><td>SS19–20</td></tr>
+    <tr><td>Générer un plan d'action</td><td>CR → Plan d'action IA</td><td>SS21</td></tr>
+    <tr><td>Voir mes auxiliaires</td><td>Équipe → Onglet Auxiliaires</td><td>SS22</td></tr>
+    <tr><td>Bénéficiaires d'une auxiliaire</td><td>Fiche auxiliaire → Recherche</td><td>SS25</td></tr>
+    <tr><td>Charge de travail &amp; Suggestions IA</td><td>Fiche auxiliaire → Bloc charge</td><td>SS26–28</td></tr>
+    <tr><td>Badges d'une auxiliaire</td><td>Fiche auxiliaire → Bouton Badges</td><td>SS29–30</td></tr>
+    <tr><td>Bien-être &amp; café</td><td>Fiche auxiliaire → Bien-être</td><td>SS31–35</td></tr>
+    <tr><td>Questionnaire bien-être</td><td>Modal côté auxiliaire</td><td>SS36</td></tr>
+    <tr><td>Liste globale bénéficiaires</td><td>Équipe → Onglet Bénéficiaires</td><td>SS37</td></tr>
+    <tr><td>Fiche bénéficiaire</td><td>Équipe → Bénéficiaires → Fiche</td><td>SS38–44</td></tr>
+    <tr><td>Planning du jour</td><td>Tuile Bénéficiaires du jour</td><td>SS45</td></tr>
+    <tr><td>Trouver un remplacement</td><td>Planning → Mission → Trouver</td><td>SS47–52</td></tr>
+    <tr><td>Suivi remplacements</td><td>Planning → Onglet Remplacements</td><td>SS53</td></tr>
+    <tr><td>Exporter un remplacement PDF</td><td>Remplacements → 📋 Exporter</td><td>SS54–55</td></tr>
+    <tr><td>Historique</td><td>Remplacements → Voir l'historique</td><td>SS56–57</td></tr>
+  </tbody></table></div>
+</section>
+
+<div class="footer">Cockpit — Guide Manager · Phase pilote · 31 mars 2026 · Réservé à Ophélie Castelain · 57 screenshots · 7 sections</div>
+
+<script>
+const photos={};
+let cur=null;
+const searchIndex=[
+  {s:'S.1',t:'Connexion',k:'connexion email mot de passe login',href:'#s1'},
+  {s:'S.1',t:'Interface & navigation',k:'barre navigation logo cloche prénom menu',href:'#s1'},
+  {s:'S.1',t:'Menu utilisateur & Aide & support',k:'menu profil déconnexion aide support Arthur Jean numéro',href:'#s1'},
+  {s:'S.1',t:'Notifications — cloche, types, onglets',k:'notifications cloche badge rouge toast types remplacement accepté refusé CR mission onglets lues historique',href:'#s1'},
+  {s:'S.2',t:'Tableau de bord',k:'tableau bord accueil dashboard quotidien',href:'#s2'},
+  {s:'S.2',t:'4 tuiles compteurs',k:'tuiles compteurs points attention comptes rendus auxiliaires bénéficiaires jour',href:'#s2'},
+  {s:'S.2',t:'Badges manager',k:'badges manager progression trophée compteur',href:'#s2'},
+  {s:'S.2',t:'Points d\'attention',k:'points attention signalement nouveau en cours traité',href:'#s2'},
+  {s:'S.2',t:'Taux de remontée & Couverture',k:'taux remontée couverture jauges statistiques moins actives plus actives',href:'#s2'},
+  {s:'S.3',t:'Comptes rendus — liste & filtres',k:'comptes rendus CR liste filtre soumis validé',href:'#s3'},
+  {s:'S.3',t:'Valider un compte rendu',k:'valider CR validation notification',href:'#s3'},
+  {s:'S.3',t:'Plan d\'action IA',k:'plan action IA intelligence artificielle recommandation',href:'#s3'},
+  {s:'S.4',t:'Liste des auxiliaires',k:'liste auxiliaires recherche bien-être score',href:'#s4'},
+  {s:'S.4',t:'Fiche auxiliaire & bénéficiaires suivis',k:'fiche auxiliaire onglets comptes rendus bien-être bénéficiaires suivis',href:'#s4'},
+  {s:'S.4',t:'Charge de travail & Suggestions IA',k:'charge travail légère normale élevée suggestions IA PDF',href:'#s4'},
+  {s:'S.4',t:'Badges auxiliaire',k:'badges auxiliaire médaille trophée progression',href:'#s4'},
+  {s:'S.4',t:'Bien-être & Proposer un café',k:'bien-être score humeur énergie alimentation café téléphone',href:'#s4'},
+  {s:'S.4',t:'Recommandations IA bien-être',k:'recommandations IA bien-être analyse tendance',href:'#s4'},
+  {s:'S.5',t:'Liste globale bénéficiaires',k:'liste bénéficiaires onglet équipe actif téléphone score',href:'#s5'},
+  {s:'S.5',t:'Fiche bénéficiaire — CR & Informations',k:'fiche bénéficiaire comptes rendus informations adresse contacts sy rendre',href:'#s5'},
+  {s:'S.5',t:'Bien-être bénéficiaire',k:'bien-être bénéficiaire tendance graphique calendrier indicateurs',href:'#s5'},
+  {s:'S.6',t:'Planning du jour',k:'planning jour mission intervention statut confirmée annulée',href:'#s6'},
+  {s:'S.6',t:'Remplacement — suggestions IA',k:'remplacement trouver suggestions IA disponibilités score',href:'#s6'},
+  {s:'S.6',t:'Boutons remplacement',k:'envoyer demande appeler valider directement remplacement',href:'#s6'},
+  {s:'S.6',t:'Suivi remplacements & export PDF',k:'onglet remplacements en attente confirmés export PDF historique annulations',href:'#s6'},
+  {s:'S.7',t:'En cas de problème — Support',k:'problème bug support Arthur Jean contact aide',href:'#s7'},
+  {s:'Checklist',t:'Checklist de test',k:'checklist test fonctionnalités tester cocher',href:'#s8'},
+  {s:'FAQ',t:'Questions fréquentes',k:'faq questions fréquentes aide réponses',href:'#s9'},
+];
+
+function doSearch(q){
+  const cl=document.getElementById('search-clear');
+  const res=document.getElementById('search-results');
+  if(!q||q.trim().length<2){cl.classList.remove('visible');res.classList.remove('visible');res.innerHTML='';return;}
+  cl.classList.add('visible');
+  const terms=q.toLowerCase().trim().split(/\s+/);
+  const matches=searchIndex.filter(item=>{const hay=(item.t+' '+item.k+' '+item.s).toLowerCase();return terms.every(t=>hay.includes(t));});
+  if(matches.length===0){res.innerHTML=`<div class="search-empty">Aucun résultat pour "<strong>${q}</strong>"</div>`;}
+  else{res.innerHTML=matches.map(m=>{const hl=m.t.replace(new RegExp('('+terms.join('|')+')','gi'),'<mark>$1</mark>');return `<a class="search-result-item" href="${m.href}" onclick="clearSearch()"><span class="sri-section">${m.s}</span><span class="sri-text">${hl}</span><span class="sri-arrow">→</span></a>`;}).join('');}
+  res.classList.add('visible');
+}
+function clearSearch(){document.getElementById('search-input').value='';document.getElementById('search-clear').classList.remove('visible');document.getElementById('search-results').classList.remove('visible');document.getElementById('search-results').innerHTML='';}
+
+function triggerLogo(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){const img=document.getElementById('logo-img');const ltr=document.getElementById('logo-letter');const wrap=document.getElementById('cv-logo');img.src=ev.target.result;img.style.display='block';ltr.style.display='none';wrap.style.background='transparent';};r.readAsDataURL(f);};inp.click();
+}
+
+function up(id){cur=id;const fi=document.getElementById('fi');fi.value='';fi.click();}
+
+document.getElementById('fi').addEventListener('change',function(e){
+  const f=e.target.files[0];
+  if(!f||!cur)return;
+  const r=new FileReader();
+  r.onload=ev=>{setPhoto(cur,ev.target.result);};
+  r.readAsDataURL(f);
+});
+
+function setPhoto(id,url){
+  photos[id]=url;
+  const el=document.querySelector(`.ss[data-id="${id}"]`);
+  if(!el)return;
+  el.classList.add('hi');el.onclick=null;
+  el.innerHTML=`<img src="${url}" alt="${id}"><div class="so"><button class="so-r" onclick="up('${id}')">🔄 Remplacer</button><button class="so-d" onclick="rmPhoto('${id}')">✕</button></div>`;
+}
+function rmPhoto(id){
+  delete photos[id];
+  const el=document.querySelector(`.ss[data-id="${id}"]`);
+  if(!el)return;
+  el.classList.remove('hi');el.onclick=()=>up(id);
+  el.innerHTML=`<span class="ss-ic">📸</span><div class="ss-n">${el.getAttribute('data-num')||id}</div><div class="ss-l">${el.getAttribute('data-lbl')||''}</div><span class="ss-d">${el.getAttribute('data-dim')||''}</span><div class="ssh">👆 Cliquer pour ajouter</div>`;
+}
+function init(){
+  const all=document.querySelectorAll('.ss[data-id]');
+  all.forEach(el=>{
+    const n=el.querySelector('.ss-n'),l=el.querySelector('.ss-l'),d=el.querySelector('.ss-d');
+    if(n)el.setAttribute('data-num',n.textContent);
+    if(l)el.setAttribute('data-lbl',l.textContent);
+    if(d)el.setAttribute('data-dim',d.textContent);
+  });
+}
+init();
+</script>
+</body>
+</html>
